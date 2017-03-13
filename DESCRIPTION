@@ -7,10 +7,9 @@ Authors@R: c(person("Nis", "Sand Jacobsen", email = "nisjac@uw.edu", role = c("a
              person("Alexandros", "Kokkalis", email = "alko@aqua.dtu.dk", role = c("ctb")))
 Description: This is a community spectrum simulator.
 Depends:
-    R (>= 3.0.0)
+    R (>= 3.0.0), shiny
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Imports: shiny
-Depends: shiny
 RoxygenNote: 5.0.1
