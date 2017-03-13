@@ -1,0 +1,15 @@
+Package: cspectrum
+Title: A community spectrum simulator
+Version: 0.0.2
+Authors@R: person("Nis", "Sand Jacobsen", email = "nisjac@uw.edu", role = c("aut", "cre"))
+Description: This is a community spectrum simulator.
+Depends:
+    R (>= 3.0.0)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Imports:
+    shiny,
+    scales
+Depends: shiny
+RoxygenNote: 5.0.1
