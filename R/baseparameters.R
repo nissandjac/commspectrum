@@ -1,6 +1,6 @@
 baseparameters  = function(wInf,kappa,h){
 
-beta <- 100;
+beta <- 100.0;
 
 
 param <- list()
