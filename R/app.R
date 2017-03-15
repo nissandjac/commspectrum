@@ -23,7 +23,11 @@ runCommunitySpectrum <- function(...) {
         column(3,sliderInput(inputId = 'Fsmall', label = '   Initial fishing level', value = 0.5, min = 0.001,
                              max = 2, step = 0.1)),
         column(3,sliderInput(inputId = 'Fsmall.after', label = '   New fishing level', value = 0.5, min = 0.001,
-                             max = 2, step = 0.1))
+                             max = 2, step = 0.1)),
+        column(3,selectInput(inputId = 'Parameterset', label = '   Parameter input',
+                             choices =  c('Generic', 'North Sea', 'Baltic Sea', 
+                                 'Benguela Current', 'Northeast US Cont. Shelf',
+                                    'Barents Sea')))
       )
       ,
       fluidRow(
@@ -78,7 +82,7 @@ runCommunitySpectrum <- function(...) {
 
     runSim <- eventReactive(input$click,{
       # Run the size based model here
-      # source('baserun.R')
+       # source('baserun.R')
       #
       F0 <- matrix(NA,3,2)
       F0[1,1] <- input$Fsmall
@@ -91,7 +95,7 @@ runCommunitySpectrum <- function(...) {
       SF <- baserun(
         nSpecies = 27,
         F0 = F0,
-        S= NA)
+        S= NA, Parameterset = input$Parameterset)
 
       #Biomass<- SF$Biomass
       return(SF)
@@ -109,6 +113,10 @@ runCommunitySpectrum <- function(...) {
 
         idx.biomass <- which(names(SF) == 'Biomass')
         Biomass <- SF[[idx.biomass]]
+        
+        idx.time <- which(names(SF) == 't')
+        time <- SF[[idx.time]]
+        
         # Sum biomass in small medium and large
         if (length(which(param$wInf < 100)) > 1){
           Biomass.small <- rowSums(Biomass[,which(param$wInf < 100)])
@@ -122,8 +130,10 @@ runCommunitySpectrum <- function(...) {
           Biomass.large <- rowSums(Biomass[,which(param$wInf > 3000)])
         }else{Biomass.large <- Biomass[,which(param$wInf > 3000)]}
 
-
-
+        if(length(Biomass.small) == 0){
+          Biomass.small <- rep(NA, length(time))
+        }
+        
         idx.biomass <- which(names(SF2) == 'Biomass') # Overwrite and plot the after new fishing
         Biomass <- SF2[[idx.biomass]]
         # Sum biomass in small medium and large
@@ -139,14 +149,14 @@ runCommunitySpectrum <- function(...) {
           Biomass.large.a <- rowSums(Biomass[,which(param$wInf > 3000)])
         }else{Biomass.large.a <- Biomass[,which(param$wInf > 3000)]}
 
-        idx.time <- which(names(SF) == 't')
-        time <- SF[[idx.time]]
-
+        if(length(Biomass.small.a) == 0){
+          Biomass.small.a <- rep(NA, length(time))
+        }
         # Plot the time varying biomass
 
         # axis limits
-        minYl <- min(c(Biomass.small,Biomass.medium,Biomass.large,Biomass.small.a,Biomass.medium.a,Biomass.large.a))
-        maxYl <- max(c(Biomass.small,Biomass.medium,Biomass.large,Biomass.small.a,Biomass.medium.a,Biomass.large.a))
+        minYl <- min(c(Biomass.small,Biomass.medium,Biomass.large,Biomass.small.a,Biomass.medium.a,Biomass.large.a), na.rm = T)
+        maxYl <- max(c(Biomass.small,Biomass.medium,Biomass.large,Biomass.small.a,Biomass.medium.a,Biomass.large.a), na.rm = T)
 
         title <- 'Temporal Biomass evolution'
         plot(time-time[length(time)], Biomass.small, log = 'y', xlab = 'time (years)', ylab = 'Biomass (g)', type = 'l', ylim =c(minYl,maxYl),
@@ -180,7 +190,7 @@ runCommunitySpectrum <- function(...) {
       plot(SF$w,fishing[1,], log = 'x', type = 'l', lwd = 2, xlim = c(0.1,max(param$wInf)),
            col = alpha('black',alpha = 0.5), ylab = 'Fishing mortality (per year)',
            xlab = 'weight (g)', ylim = yl, main = title)
-      lines(SF2$w, fishing.after[2,], lwd = 2, col = alpha('red', alpha =  0.3))
+      lines(SF2$w, fishing.after[1,], lwd = 2, col = alpha('red', alpha =  0.3))
       for (i in 2:param$nSpecies){
         lines(SF$w,fishing[i,], lwd = 2, col = alpha('black',alpha = 0.5))
         lines(SF2$w,fishing.after[i,], col = alpha('red', alpha =  0.5))
@@ -205,14 +215,22 @@ runCommunitySpectrum <- function(...) {
               max(c(Yield,Yield2)))
 
       title <- 'Yield at equilibrium'
-
+      if (input$Parameterset == 'Generic'){
       plot(param$wInf,Yield, log = 'xy', col = alpha('black',alpha = 0.5), type = 'l', xlab = 'asymptotic weight (g)', ylim = yl,
            main = title, lwd = 3)
       lines(param$wInf,Yield2, col = alpha('red', alpha = 0.3), lwd = 3)
       lines(rep(100,100), seq(1e-15,yl[2]+100, length.out = 100), lty = 2)
       lines(rep(3000,100), seq(1e-15,yl[2]+100, length.out = 100), lty = 2)
-      legend('bottomright', legend = c('Before', 'after'), lty = c(1,1), col = c('black','red'), bty = 'n')
-
+      legend('bottomright', legend = c('Before', 'after'), lty = c(1,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
+      }else{
+        plot(param$wInf,Yield, log = 'xy', col = alpha('black',alpha = 0.5),
+             xlab = 'Asymptotic weight (g)', ylim = yl,
+             main = title, pch = 16, lwd = 3, cex = 2)
+        points(param$wInf,Yield2, col = alpha('red', alpha = 0.5), cex = 2, lwd = 3)
+        lines(rep(100,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
+        lines(rep(3000,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
+        legend('bottomleft', legend = c('Before', 'after'), pch = c(16,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
+      }
     })
 
     output$plotSSB <- renderPlot({
@@ -227,15 +245,27 @@ runCommunitySpectrum <- function(...) {
               max(c(SSB,SSB2)))
 
       title <- 'SSB at equilibrium'
-
+      
+      if (input$Parameterset == 'Generic'){
       plot(param$wInf,SSB, log = 'xy', col = alpha('black',alpha = 0.5), type = 'l',
            xlab = 'Asymptotic weight (g)', ylim = yl,
            main = title, lwd = 3)
       lines(param$wInf,SSB2, col = alpha('red', alpha = 0.3), lwd = 3)
       lines(rep(100,100), seq(1e-15,yl[2]+100, length.out = 100), lty = 2)
       lines(rep(3000,100), seq(1e-15,yl[2]+100, length.out = 100), lty = 2)
-      legend('bottomright', legend = c('Before', 'after'), lty = c(1,1), col = c('black','red'), bty = 'n')
-
+      legend('bottomright', legend = c('Before', 'after'), lty = c(1,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
+      }else{
+        plot(param$wInf,SSB, log = 'xy', col = alpha('black',alpha = 0.5),
+             xlab = 'Asymptotic weight (g)', ylim = yl,
+             main = title, pch = 16, lwd = 3, cex = 2)
+        points(param$wInf,SSB2, col = alpha('red', alpha = 0.5), cex = 2, lwd = 3)
+        lines(rep(100,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
+        lines(rep(3000,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
+        legend('bottomleft', legend = c('Before', 'after'), pch = c(16,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
+      }
+      
+      
+      
     })
 
     output$plotSpectrum <- renderPlot({
@@ -249,19 +279,25 @@ runCommunitySpectrum <- function(...) {
 
       idxEnd <- param$tEnd/param$dt
       Spectrum1 <- N[idxEnd,,]
+      Spectrum1[Spectrum1 == 0] <- NA # For plotting on log scale 
 
       idx.N <- which(names(SF2) == 'N')
       N <- SF2[[idx.N]]
       Spectrum2 <- SF2$N[idxEnd,,]
-
+      Spectrum2[Spectrum2 == 0] <- NA # For plotting
+      
+      
       w <- SF$w
       title <- 'Biomass density at equilibrium'
 
+      yl <- c(2*min(c(t(replicate(param$nSpecies, w))*Spectrum1,t(replicate(param$nSpecies, w))*Spectrum2), na.rm = T), 
+              100*max(c(t(replicate(param$nSpecies, w))*Spectrum1,t(replicate(param$nSpecies, w))*Spectrum2), na.rm = T))
+      
       plot(w,Spectrum1[1,]*w, log = 'xy', type = 'l', col = alpha('black',alpha = 0.3),
            ylab = 'Biomass density (per vol)', xlab =
-             'weight (g)', main = title, ylim=c(1e-7, .1))
+             'weight (g)', main = title, ylim=yl)
       lines(w,Spectrum2[1,]*w, col = alpha('red',alpha = 0.3))
-
+      
       for (i in 2:param$nSpecies){
         lines(w,Spectrum1[i,]*w, col = alpha('black',alpha = 0.3))
         lines(w,Spectrum2[i,]*w, col = alpha('red',alpha = 0.3))
