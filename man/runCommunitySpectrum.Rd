@@ -18,4 +18,3 @@ Run the community spectrum simulator
 \examples{
 runCommunitySpectrum()
 }
-
