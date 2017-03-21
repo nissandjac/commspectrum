@@ -62,8 +62,7 @@ runCommunitySpectrum <- function(...) {
       column(6,
              plotOutput(outputId = 'plotSSB'))),
 
-    fluidRow(6, 
-             plotOutput(outputId = 'plotSpectrum', height = 600)),
+    fluidRow(plotOutput(outputId = 'plotSpectrum', height = 600)),
 
     wellPanel(
       helpText(a("code by Nis Sand Jacobsen",
@@ -327,5 +326,5 @@ runCommunitySpectrum <- function(...) {
     })
 
 
-  }, options = list(height = 2080)))
+  }))
 }
