@@ -15,8 +15,8 @@ param <- baseparameters(W,kappa = 0.005,h = 20)
 
   
 if (Parameterset == 'North Sea'){
-
-  load('R/NorthSea.RData')
+  
+  load('NorthSea.RData')
   W <- param$wInf
   nSpecies <- param$nSpecies
   
@@ -25,7 +25,7 @@ if (Parameterset == 'North Sea'){
   
 if (Parameterset == 'Benguela Current'){
     
-    load('R/Benguela.RData')
+    load('Benguela.RData')
     W <- param$wInf
     nSpecies <- param$nSpecies
     
@@ -34,7 +34,7 @@ if (Parameterset == 'Benguela Current'){
   
 if (Parameterset == 'Baltic Sea'){
   
-    load('R/Baltic.RData')
+    load('Baltic.RData')
     W <- param$wInf
     nSpecies <- param$nSpecies
     
@@ -42,7 +42,7 @@ if (Parameterset == 'Baltic Sea'){
   
   if (Parameterset == 'Northeast US Cont. Shelf'){
     
-    load('R/NEUSCS.RData')
+    load('NEUSCS.RData')
     W <- param$wInf
     nSpecies <- param$nSpecies
     
@@ -51,7 +51,7 @@ if (Parameterset == 'Baltic Sea'){
   
   if (Parameterset == 'Barents Sea'){
     
-    load('R/Barents.RData')
+    load('Barents.RData')
     W <- param$wInf
     nSpecies <- param$nSpecies
     
