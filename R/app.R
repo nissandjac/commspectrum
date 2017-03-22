@@ -21,9 +21,9 @@ runCommunitySpectrum <- function(...) {
       fluidRow(
         column(2, br(),br(), p('Small species')),
         column(3,sliderInput(inputId = 'Fsmall', label = '   Initial fishing level', value = 0.5, min = 0,
-                             max = 2, step = 0.1)),
+                             max = 3, step = 0.1)),
         column(3,sliderInput(inputId = 'Fsmall.after', label = '   New fishing level', value = 0.5, min = 0,
-                             max = 2, step = 0.1)),
+                             max = 3, step = 0.1)),
         column(3,selectInput(inputId = 'Parameterset', label = '   Parameter input',
                              choices =  c('Generic', 'North Sea', 'Baltic Sea', 
                                  'Benguela Current', 'Northeast US Cont. Shelf',
@@ -33,17 +33,17 @@ runCommunitySpectrum <- function(...) {
       fluidRow(
         column(2, br(),br(), p('Medium species')),
         column(3,sliderInput(inputId = 'Fmedium', label = '', value = 0.5, min = 0,
-                             max = 2, step = 0.1)),
+                             max = 3, step = 0.1)),
         column(3,sliderInput(inputId = 'Fmedium.after', label = '', value = 0.5, min = 0,
-                             max = 2, step = 0.1))
+                             max = 3, step = 0.1))
       )
       ,
       fluidRow(
         column(2, br(),br(), p('Large species')),
         column(3,sliderInput(inputId = 'Flarge', label = '', value = 0.5, min = 0,
-                             max = 2, step = 0.1)),
+                             max = 3, step = 0.1)),
         column(3,sliderInput(inputId = 'Flarge.after', label = '', value = 0.5, min = 0,
-                             max = 2, step = 0.1))
+                             max = 3, step = 0.1))
       ))
     ,
     actionButton(inputId = 'click', label = 'Start simulation'),

@@ -20,7 +20,7 @@ param$f0 <- 0.6; # Feeding level used for calculation of equ$ spectra$
 
 # Species-specific:
 param$wInf <- t(wInf);#logspace(log10(10), log10(1000000), nSpecies)';
-param$mu0prefactor <-1; #2      # Natural mortality
+param$mu0prefactor <-2; #2      # Natural mortality
 param$mu0exponent <- -1/4; # -1/4
 param$muS0 <- 0;                        # Prefactor for starvation mortality
 param$wMax <- 2*max(param$wInf);

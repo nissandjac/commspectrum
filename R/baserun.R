@@ -65,7 +65,7 @@ param$F0[W > 3000] <- F0[3,1]
   
 param$fishing <- "Trawl" # See "fishing.R" for definitions
   
-param$tEnd <- 40
+param$tEnd <- 100
 param$dt <- 0.5 # run the model faster
 SF <- IterateSpectrum(param,S = S) # Add S here to start at initial conditions from before
 SF$Yield <- YieldCalc(param,SF)
