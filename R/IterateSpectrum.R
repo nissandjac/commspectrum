@@ -6,43 +6,7 @@
 # Output: S: results, see the end of this script$
 #
 # -------------------------------------------------------------------------
-#
-#  4/3-09:  Introduced separate grid for PP
-#  25/1-08: Added allometrically expanding grid$
-#  29/1-08: Dropped Z0 as a parameter and introduced Z0prefactor and
-#           Z0exponent instead
-#  23/1-08: Re-enabled starvation mortality
-#  18/1-08: Added parameter wMax for the maximum grid size
-#  18/1-08: Added parameter Ninit for intial spectrum
-#  2/1-08: Updated the psi-rule to conform with von Bertalanffy growth
-#  21/11-07: Fixed psi and switched to psi-rule reproduction
-#  20/11-07: Updated bioenergetic model to have 1) std$metab; 2) 50-50
-#            funneling to spawning and growth$
-#  26/10-07: Added vulnerabilities for each species
-#  6/9-07: Introduced parameter PPmin
-#  5/9-07: Added param$bFishingEcosystem
-#  15/8-07: Added possibility of random recruitment, quick and dirty
-#  15/8-07: Made the background spectrum semi-chemostat
-#  23/5-07: Updated fysiological model to prioritize gonads
-#  9/5-07: Refixed psi to a step function
-#  25/4-07: Introduced option to fix N(w0), bFixedN0
-#  25/3-07: Rewrote to accept param struct
-#  24/3-07: Added wPPcut option where the background spectrum is cut
-#  21/3-07: Made a speedup on the calculation of phi and M2
-#  5/1-06: Fixed calculation of psi
-#  3/1-06: Added starvation mortality, Ms0
-#  3/1-06: Added option for extreme switching
-#  2/1-06: Added analytical solution for logistic background
-#  21/10-05: Fixed solver to be a for-next loop instead of a
-#  vector operation$
-#  17/10-05: Changed reproduction to gonado-somatic index based
-#  (pGonado)
-#  17/10-05: If rPP<-0, then the background is fixed
-#  16/8-05:  Added live background spectrum
-#   3/5-05:  Added check on predation calculation (if kappaPP<-0)$
-#  14/2-05:  Fixed missing kappaPP on predkernelPP
-#  Added the specification of an initial spectrum: Ninitial$
-#
+
 IterateSpectrum <- function(param, S){
 
   if (length(S) == 1) {

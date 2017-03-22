@@ -1,5 +1,16 @@
+#' Run the food web size spectrum model manually
+#'
 #' @param Parameterset Text string with the name of the parameter set to use
-runFoodWebModel <- function(Parameterset='TraitBased', F0 = c(0.3, 0.3, 0.3)) 
+#' @param F0 Array with fishing mortality on each fleet
+#' @param S Output from a previous simulation to use as initial conditions
+#'
+#' @return A structure with the output of the simulation
+#'
+#' @examples 
+#' 
+#' 
+#' @export
+runFoodWebModel <- function(Parameterset='TraitBased', F0 = c(0.3, 0.3, 0.3), S = NA) 
 {
   #
   # Choose the parameter set
