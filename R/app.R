@@ -92,9 +92,13 @@ runCommunitySpectrum <- function(...) {
     fluidRow(plotOutput(outputId = 'plotSpectrum', height = 600))
     ,
     wellPanel(
-      helpText(a("code by Nis Sand Jacobsen",
-                 href='mailto:nisjac@uw.edu')
-      )
+      p('The calculations are based on the model in ',
+        a('Andersen et al (2016)', href='https://www.researchgate.net/publication/284514316_The_theoretical_foundations_for_size_spectrum_models_of_fish_communities'), 
+        '. The calibrations for the specific ecosystem is described in ',
+        a('Jacobsen et al (2016)', href='https://www.researchgate.net/publication/305110273_Efficiency_of_fisheries_is_increasing_at_the_ecosystem_level?_iepl%5BviewId%5D=dbdozbH76RI7ERE6VF6iTz8O&_iepl%5BprofilePublicationItemVariant%5D=default&_iepl%5Bcontexts%5D%5B0%5D=prfpi&_iepl%5BinteractionType%5D=publicationTitle'),
+        '. Code by ',
+        a("Nis Sand Jacobsen", href='mailto:nisjac@uw.edu'),
+        '. Output of the model should not be used in a practical management setting without first consulting the authors. ')
     )
   ),
   server = function(input,output){
@@ -377,4 +381,13 @@ runCommunitySpectrum <- function(...) {
     
     
   }))
+}
+
+Ecosystemdescription <- function(sEcosystem) 
+{
+  if (sEcosystem == 'Generic')
+    return('test')
+
+  if (sEcosystem == 'North Sea')
+    return('test 2')
 }

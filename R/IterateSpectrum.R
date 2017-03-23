@@ -8,11 +8,11 @@
 # -------------------------------------------------------------------------
 
 IterateSpectrum <- function(param, S){
-
+  
   if (length(S) == 1) {
     S <- list()
   }
-
+  
   # source("makegrid.R")
   # source('gradient.R')
   # source('fishing.R')
@@ -22,18 +22,18 @@ IterateSpectrum <- function(param, S){
   #nGrid <- param$nGrid;
   #w <- logspace(log10(param$w0), log10(param$wMax), nGrid);
   #dw <- gradient(w);
-
+  
   wl <- makegrid(param);
   w <- wl[[1]]
   dw <- wl[[2]]
-
+  
   nGrid <- length(w);
-
+  
   # wPP is the primary spectrum grid
-
+  
   nGridPP <- param$nGridPP;
-
-
+  
+  
   #wend <- fzero(@(x) x+param$fGridexp*x^0$75-param$w0, param$w0);
   if (nGridPP == 1){
     wPP <- param$wRcut;
@@ -46,7 +46,7 @@ IterateSpectrum <- function(param, S){
     wPP <- wPPtemp[1:nGridPP] + dwPPtemp[1:nGridPP]/2
     dwPP <- gradient(wPP)
   }
-
+  
   # ---------------------------------------------------------
   # Primary production spectrum:
   # ---------------------------------------------------------
@@ -56,17 +56,17 @@ IterateSpectrum <- function(param, S){
     NinfPP <- param$kappaR * wPP^param$kR
   }
   nPP <- NinfPP; # Start with a saturated background spectrum
-
+  
   rrPP <- param$rR*wPP^(-param$lR) # Weight specific growth rate
-
+  
   # Copy the spectrum in the x-direction if needed:
   xPP <- matrix(1,nGridPP)
-
-
+  
+  
   # if (is.na(S$nPP[param$tEnd/param$dt,1,1]) == FALSE){
   #  nPP <- (S$nPP[length(wPP),,]) # Fix this once the model is running
   # }
-
+  
   #---------------------------------------------------------
   # Set up the species:
   # ---------------------------------------------------------
@@ -77,9 +77,9 @@ IterateSpectrum <- function(param, S){
   # intermediate variable:
   #
   onez <- matrix(1,nSpecies)
-
+  
   # Preallocate some stuff
-
+  
   psi <- matrix(0,nSpecies,length(w))
   e <- matrix(0,nSpecies,nGrid)
   gg <- matrix(0,nSpecies,nGrid)
@@ -111,41 +111,41 @@ IterateSpectrum <- function(param, S){
     param$rho <- param$rho(1)*onez;
     param$R0 <- param$R0(1)*onez;
   }
-
+  
   if (length(param$alpha)==1){
     param$alpha <- param$alpha*onez
   }
-
+  
   #if (length(param$bFixedN0)<-<-1)
   #  param$bFixedN0 <- param$bFixedN0*onez;
   #  param$fRandomRecruitment <- param$fRandomRecruitment*onez;
   #end
-
+  
   Winf <- param$wInf;
   wMature <- Winf*param$alphaMature;
   Z0 <- param$mu0prefactor * Winf^param$mu0exponent; # Changed from Z0 to mu0
-
+  
   if (length(param$eRepro) == 1){
     param$eRepro <- param$eRepro * matrix(1,nSpecies)
   }
-
+  
   if (length(S) == 0){
     if (length(param$Ninit) > 0){
       N <- param$Ninit;
     }}
-
+  
   for (iSpecies in 1:nSpecies){
     #
     # Initial spectrum:
     #
-
-
+    
+    
     #
     # if (length(S) > 0){
     #   Ntemp <- approx(S$w, S$N[param$tEnd/param$dt,iSpecies,],w) # Might be unneccesary
     #   N[iSpecies,] <- Ntemp$y
     # }#}
-
+    
     #  Define species specific h and gamma
     if (length(param$h) > 1){
       IntakeMax[iSpecies,] <- param$h[iSpecies]* w^param$n;
@@ -153,19 +153,19 @@ IterateSpectrum <- function(param, S){
       IntakeMax <- param$h * w^param$n;
       #IntakeMax <- t(replicate(wend,IntakeMax))
     }
-
+    
     if (length(param$gamma) > 1) {
       SearchVol[iSpecies,] <- param$gamma[iSpecies] * w^param$q
     }else{
       SearchVol <- param$gamma * w^param$q
       #SearchVol <- t(replicate(wend,SearchVol))
     }
-
+    
     ##
     # Allocation to reproductive mass:
     #
-
-
+    
+    
     tmp <- w/param$wInf[iSpecies];
     psi[iSpecies,] <- tmp^(1-param$n)*1/(1+(tmp/param$alphaMature)^(-10));     # cut off before maturation
     # param to mature cutoff
@@ -179,36 +179,36 @@ IterateSpectrum <- function(param, S){
     if (length(param$F0 == 1)){
       param$F0 <- param$F0 * matrix(1,nSpecies)
     }
-
+    
     if (length(param$fishing) > 0){
       type = param$fishing
       Fin[iSpecies,] <- fishing(param,iSpecies,w,type)
     }
-
-
-
+    
+    
+    
     if (length(param$wFstart) > 0){
-
+      
       if (length(param$wFstart) == 1){
         param$wFstart <- param$wFstart * matrix(1,length(param$wInf));
       }
-
+      
       Fin[iSpecies,w < param$wFstart[iSpecies]] <- 0
     }
-
-
+    
+    
     if (length(param$wFend) > 0){
-
+      
       if (length(param$wFend) == 1){
         param$wFend <- param$wFend * matrix(1,length(param$wInf));
       }
-
+      
       Fin[iSpecies,w > param$wFend[iSpecies]] <- 0
     }
   }
-
-
-
+  
+  
+  
   #-----------------------------------------------------------------------------
   # If there was a previous run, override some of the defaults given above
   # -----------------------------------------------------------------------------
@@ -216,25 +216,25 @@ IterateSpectrum <- function(param, S){
     nPP <- S$nPP[dim(S$nPP)[1], , ]
     N <- S$N[dim(S$N)[1], , ]
   }
-
+  
   # Allocate the variables:
   A <- matrix(0,nSpecies,nGrid);
   B <- matrix(0,nSpecies,nGrid);
   S <- matrix(0,nSpecies,nGrid);
   R <- matrix(0,nGrid,1);
   f <- matrix(0,nSpecies, nGrid);
-
+  
   # -----------------------------------------------------------------------------
   # Set up vars for calculating predation$
   # predkernel(iPredator, iPrey)
   # -----------------------------------------------------------------------------
   predkernel <- matrix(0,nGrid, nGrid);
   predkernelPP <- matrix(0,nGrid, nGridPP);
-
+  
   for (j in 1:nGrid){  # loop over predator lengths
     predkernel[j,] <- exp(-0.5*(log(w[j]/(param$beta*w))/param$sigma)^2);
     predkernel[j, w >= w[j]] <- 0
-
+    
     predkernelPP[j,] <- exp(-0.5*(log(w[j]/(param$beta*wPP))/param$sigma)^2);
   } # Does not work if nGridPP == 1
   #
@@ -261,7 +261,7 @@ IterateSpectrum <- function(param, S){
   # param$nxPP <- 1;
   # #thetaPP <- NaN;
   # end
-
+  
   #---------------------------------------------------------
   # Initialize:
   # ---------------------------------------------------------
@@ -280,49 +280,35 @@ IterateSpectrum <- function(param, S){
   #eSave <- zeros(nSave, nSpecies, nGrid);
   gSave <- array(0, dim = c(nSave, nSpecies, nGrid))
   nPPsave <- array(0, dim=c(nSave, 1, nGridPP))
-
+  
   MsSave <- array(0, dim = c(nSave, nSpecies, nGrid))
   dt <- param$dt
-
+  
   preySave <- matrix(0,param$nSpecies,nGrid)
   M2PPSave <- matrix(NA,nSave,nGridPP)
-
+  
   f <- matrix(0,nSpecies, nGrid)
   # -------------------------------------------------------------------------
   # Calculate total spectrum  (just for the first iteration):
   # -------------------------------------------------------------------------
-
   Ntot <- colSums(N);
   idx <- 2:nGrid
   #---------------------------------------------------------
   # main loop:
   # ---------------------------------------------------------
   for (iTime in 1:iTimeMax){
-    # if param$bVerbose
-    # percent <- iTime/iTimeMax*100;
-    # if (floor(percent) > floor((iTime-1)/iTimeMax*100))
-    # fprintf('$',iTime/iTimeMax); ##ok<CTPCT>
-    # if (floor(percent/10) > floor((iTime-1)/iTimeMax*10))
-    # fprintf('#d\n',floor(percent));
-    # end
-    #
-    # end
-    # end
-    # drawnow
-
+    
     if (theta == 1){ # no species preference matrix:
       # Available food:
       phiprey <-  t(dwPP*wPP*nPP) %*% t(predkernelPP[1:nGrid,]) + (dw*w*colSums(matrix(rep(param$v,nGrid),nrow = nSpecies)*N)) %*% t(predkernel)
-
+      
       # Feeding level:
       if (length(param$h) == 1){
         for (jSpecies in 1:nSpecies){
           f[jSpecies,] <- 1-
             ( t(IntakeMax/SearchVol/(phiprey+(IntakeMax/SearchVol)) ))
         }
-
-        #f(:,:) <- 0$6
-
+        
         # Predation mortality
         M2 <- matrix(0, nGrid)
         M2PP <- matrix(0, nGridPP)
@@ -333,73 +319,27 @@ IterateSpectrum <- function(param, S){
         }
         M2 <- matrix(1,nSpecies,1)%*%t(M2)
         M2PP <- colSums((matrix(1,nSpecies)%*%(dw*SearchVol) * N * (1-f)) %*% predkernelPP)
-
+        
       }else{
         for (jSpecies in 1:nSpecies){
           f[jSpecies,] <- 1-
             ( t(IntakeMax[jSpecies,]/SearchVol[jSpecies,]/(phiprey+(IntakeMax[jSpecies,]/SearchVol[jSpecies,])) ))
-
-
-          #f(:,:) <- 0$6
         }
         # Predation mortality
         M2 <- matrix(0,nSpecies ,nGrid)
         M2PP <- matrix(0, nGridPP)
         for (jPred in 1:nSpecies){
           M2[jPred,] = param$v[jPred]*colSums((((matrix(1,nSpecies)%*%dw)*SearchVol) * N * (1-f)) %*% predkernel)
-
-          # tmp <- dw * (1-f[jPred,]) * SearchVol[jPred,] * N[jPred,]
-
         }
         M2PP <- colSums(((matrix(1,nSpecies)%*%dw)*SearchVol * N * (1-f)) %*% predkernelPP)
       }
     }
-    #  M2 <- matrix(1,nSpecies,1)%*%t(M2)}}}
-    #   else { # with species interaction matrix
-    #                 # Available food:
-    #                 for (j in 1:nSpecies){
-    #                 # Available food:
-    #                 #         phiprey <- $$$
-    #                 #           (dwPP$*wPP$* sum((thetaPP(j,:)' * ones(1,nGridPP)) $* nPP,1)) $$$
-    # #           * predkernelPP(1:nGrid,:)' $$$
-    # #           + (dw$*w$* sum((theta(j,:)'*ones(1,nGrid))$*N)) *predkernel';
-    #
-    # phiprey <- (dwPP*wPP* thetaPP[j]*nPP) %*% predkernelPP[1:nGrid,]+
-    #                 (dw*w* colSums((theta[,j]*matrix(1,nGrid))*N)) %*%predkernel
-    # # Everything in smaller life stages is free game
-    # # ix <- (w < 25);
-    # # phiprey[ix] <- (dwPP*wPP*nPP) * predkernelPP(ix,:)' + $$$
-    # # (dw(ix)$*w(ix)$* sum(N(:,ix))) *predkernel(ix,ix)';
-    #
-    #
-    # preySave[j,] <- phiprey
-    # # Then go for the feeding level:
-    # f[j,] <- 1-((IntakeMax[j,]/SearchVol[j,]/(phiprey+(IntakeMax[j,]/SearchVol[j,]))));
-    # }
-    # #f(:,:) <- 0$6;
-    # M2 <- matrix(0,nSpecies, nGrid)
-    # M2PP <- matrix(0,param$nxPP, nGridPP);
-    # for (i in 1:nSpecies){
-    # M2[i,] <- colSums(((theta[i,]*(dw*SearchVol[i,]))*N*(1-f)) %*% predkernel);
-    #                 #for j <- 1:nSpecies
-    #                 #  tmp <- theta(i,j)*dw $* (1-f(j,:)) $* SearchVol $* N(j,:);
-    #                 #  M2(i,:) <- M2(i,:) + tmp * predkernel;
-    #                 #end
-    #                 M2PP <- M2PP + colSums(((theta[i,]%*%(dw*SearchVol[i,]))*N*(1-f)) %*% predkernelPP)
-    # }
-    # #       for i <- 1:param$nxPP
-    # #         M2PP(i,:) <- sum(((thetaPP(:,i)*(dw$*SearchVol)) $* N $* (1-f)) $$$
-    #                           #           * predkernelPP);
-    # #       end
-    # #end
-    # }
     # -----------------------------------------------------------------
     # Iterate each species:
     # -----------------------------------------------------------------
     for (i in 1:nSpecies){
       #
-
-      # Calc$ assimilated intake:
+      # Calc assimilated intake:
       #
       if (length(param$h) ==1){
         e[i,] <- param$alpha[i]*f[i,]*IntakeMax
@@ -408,10 +348,8 @@ IterateSpectrum <- function(param, S){
       }
       #
       # Subtract standard metabolism and activity:
-
-
+      #
       e[i,] <- e[i,] - StdMetab[i,] - Activity
-
       #
       # Starvation mortality is imposed if the available energy e<0:
       #
@@ -424,7 +362,7 @@ IterateSpectrum <- function(param, S){
       #
       SSBm <- psi[i,]*e[i,] # Psi-rule for spawning:
       #
-      # $$$and use the rest for somatic growth:
+      # ...and use the rest for somatic growth:
       #
       gg[i,] <- e[i,] - SSBm
       #
@@ -442,32 +380,20 @@ IterateSpectrum <- function(param, S){
       #
       Egg <- sum(param$eRepro[i]*SSBm*N[i,]*dw)   # Egg production (mass/time)
       Rp <- 0.5*param$rho[i]*Egg/w[1]# * param$R0[i]*exp(rnorm(n = 1, mean = 0, sd = param$R.sd[i])) # Egg flux (numbers/time)
-
-      # switch param$nRecruitmentType Maybe fix if needed
-      # case 0,     # Physiological
-      # R <- Rp;    # recruitment <- egg production
-      # B(i,1) <- 1 + gg(i,1)$*dt$/dw(1) + Z(1)*dt;
-      # N(i,1) <- (N(i,1)+R*dt/dw(1))/B(i,1);
-      # case 1,     # Fixed
-      # R <- param$fN0(i)*(gg(i,1)*w(1));
-      # N(i,1) <- param$fN0(i);
-
       # Beverton-Holt
       R <- param$Rmax[i]*Rp/(param$Rmax[i]+Rp)
       B[i,1] <- 1 + gg[i,1]*dt/dw[1] + Z[1]*dt
       N[i,1] <- (N[i,1]+R*dt/dw[1])/B[i,1]
-
+      
       #
       # Invert matrix
       #
       for (j in 2:nGrid){
         N[i,j] <- (S[i,j]-A[i,j]*N[i,j-1])/B[i,j]
       }
-
       #
       # save results:
       #
-
       if ((iTime %% param$iSave) == 0) {
         iSave <- iTime/param$iSave;
         #eSave(iSave,i,:) <- e(i,:);
@@ -487,7 +413,7 @@ IterateSpectrum <- function(param, S){
     #
     # Update the background spectrum:
     #
-
+    
     # for (i in 1:param$nxPP){
     tmp <- (rrPP*NinfPP / (rrPP + M2PP))
     nPP <- tmp - (tmp - nPP)*exp(-(rrPP+M2PP)*dt)
@@ -568,10 +494,10 @@ IterateSpectrum <- function(param, S){
   S$nPP <- nPPsave;      # Resource spectrum (time,1,weight)
   S$dwPP <- dwPP;
   S$xPP <- xPP;
-
-
-
-
+  
+  
+  
+  
   #                            if param$bVerbose
   #                            tRun <- cputime-tStart;
   #                            fprintf('\nExecution time: #2d:#05$2f$\n',$$$
