@@ -115,7 +115,7 @@ runCommunitySpectrum <- function(...) {
     #
     #   Run simulation when the button is clicked
     #
-    runSim <- eventReactive(input$click,{
+    simResults <- eventReactive(input$click,{
       #
       # Set sizes of fleets:
       #
@@ -144,9 +144,9 @@ runCommunitySpectrum <- function(...) {
     output$plotBiomass <- renderPlot(
       {
         
-        SF <- runSim()[[1]] # Run before
-        SF2 <- runSim()[[2]]  # Run after
-        param <- runSim()[[3]] # params
+        SF <- simResults()[[1]] # Run before
+        SF2 <- simResults()[[2]]  # Run after
+        param <- simResults()[[3]] # params
         
         
         idx.biomass <- which(names(SF) == 'Biomass')
@@ -213,9 +213,9 @@ runCommunitySpectrum <- function(...) {
         
       })
     output$plotF <- renderPlot({
-      SF <- runSim()[[1]]
-      param <- runSim()[[3]]
-      SF2 <- runSim()[[2]]
+      SF <- simResults()[[1]]
+      param <- simResults()[[3]]
+      SF2 <- simResults()[[2]]
       
       idx.fishing <- which(names(SF) == 'Fin')
       fishing <- SF[[idx.fishing]]
@@ -239,9 +239,9 @@ runCommunitySpectrum <- function(...) {
     
     output$plotYield <- renderPlot({
       
-      SF <- runSim()[[1]]
-      SF2 <- runSim()[[2]]      #param <- MM[[which(MM == 'param')]]
-      param <- runSim()[[3]]
+      SF <- simResults()[[1]]
+      SF2 <- simResults()[[2]]      #param <- MM[[which(MM == 'param')]]
+      param <- simResults()[[3]]
       
       
       
@@ -292,9 +292,9 @@ runCommunitySpectrum <- function(...) {
     })
     
     output$plotSSB <- renderPlot({
-      SF <- runSim()[[1]]
-      SF2 <- runSim()[[2]]      #param <- MM[[which(MM == 'param')]]
-      param <- runSim()[[3]]
+      SF <- simResults()[[1]]
+      SF2 <- simResults()[[2]]      #param <- MM[[which(MM == 'param')]]
+      param <- simResults()[[3]]
       
       SSB <- calcSSB(param,SF,length(SF$t))
       SSB2 <- calcSSB(param,SF2,length(SF2$t))
@@ -332,9 +332,9 @@ runCommunitySpectrum <- function(...) {
     
     output$plotSpectrum <- renderPlot(expr={
       
-      SF <- runSim()[[1]]
-      SF2 <- runSim()[[2]]      #param <- MM[[which(MM == 'param')]]
-      param <- runSim()[[3]]
+      SF <- simResults()[[1]]
+      SF2 <- simResults()[[2]]      #param <- MM[[which(MM == 'param')]]
+      param <- simResults()[[3]]
       
       idx.N <- which(names(SF) == 'N')
       N <- SF[[idx.N]]
