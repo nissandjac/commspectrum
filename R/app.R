@@ -98,6 +98,8 @@ runCommunitySpectrum <- function(...) {
         a('Jacobsen et al (2016)', href='https://www.researchgate.net/publication/305110273_Efficiency_of_fisheries_is_increasing_at_the_ecosystem_level?_iepl%5BviewId%5D=dbdozbH76RI7ERE6VF6iTz8O&_iepl%5BprofilePublicationItemVariant%5D=default&_iepl%5Bcontexts%5D%5B0%5D=prfpi&_iepl%5BinteractionType%5D=publicationTitle'),
         '. Code by ',
         a("Nis Sand Jacobsen", href='mailto:nisjac@uw.edu'),
+        ' and ',
+        a('Ken Haste Andersen', href = 'mailto:kha@aqua.dtu.dk'),
         '. Output of the model should not be used in a practical management setting without first consulting the authors. ')
     )
   ),
