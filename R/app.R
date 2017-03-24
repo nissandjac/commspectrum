@@ -206,14 +206,18 @@ runCommunitySpectrum <- function(...) {
         title <- 'Temporal Biomass evolution'
         plot(time-time[length(time)], Biomass.small, log = 'y', xlab = 'time (years)', ylab = 'Biomass (ton)', type = 'l', ylim =c(minYl,maxYl),
              xlim = c(-20, time[length(time)]), col = alpha('black', alpha =  0.5), main = title)
+        if(length(Biomass.medium > 0)){
         lines(time-time[length(time)],Biomass.medium, col = alpha('black', alpha =  0.5), lwd = 2)
+        }
         lines(time-time[length(time)],Biomass.large, col = alpha('black', alpha =  0.5), lwd = 3)
         
         #time2 <- seq(time[length(time)]+param$dt,2*time[length(time)], length.out = length(time))
         lines(time,Biomass.large.a, col = alpha('red', alpha =  0.3), lwd = 3)
         lines(time,Biomass.small.a, col = alpha('red', alpha =  0.3))
+        if(length(Biomass.medium > 0)){
         lines(time,Biomass.medium.a, col = alpha('red', alpha =  0.3), lwd = 2)
-        legend('bottomright', legend = c('Small', 'Medium', 'Large'), lty = c(1,1,1), lwd = c(1,2,3), bty = 'n')
+        }
+          legend('bottomright', legend = c('Small', 'Medium', 'Large'), lty = c(1,1,1), lwd = c(1,2,3), bty = 'n')
         # Add diagonal line
         lines(rep(0, 100), seq(min(minYl), max(maxYl), length.out = 100), lty = 2, col = 'black', lwd = 3)
         
