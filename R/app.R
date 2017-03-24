@@ -43,10 +43,10 @@ runCommunitySpectrum <- function(...) {
         and the smallest size targeted by the demersal fleet:'),
       fluidRow(
         column(2),
-        column(3,sliderInput(inputId = 'wMiddle', label = 'Max. weight of forage fish (log10)', value = log10(100), min = 0,
-                             max = 4, step = 0.5)),
-        column(3,sliderInput(inputId = 'wLarge', label = 'Min. weight of large fish (log10)', value = log10(3000), min = 2,
-                             max = 6, step = 0.5))
+        column(3,sliderInput(inputId = 'wMiddle', label = 'Max. weight of forage fish', value = 100, min = 0,
+                             max = 1000, step = 50)),
+        column(3,sliderInput(inputId = 'wLarge', label = 'Min. weight of large fish', value = 3000, min = 1000,
+                             max = 10000, step = 500))
       ))
     ,
     wellPanel(
@@ -119,10 +119,17 @@ runCommunitySpectrum <- function(...) {
       #
       # Set sizes of fleets:
       #
-      wMiddle <- 10^input$wMiddle
-      wLarge <- 10^input$wLarge
-      if (wMiddle > wLarge)
-        wMiddle <- wLarge
+      wMiddle <- input$wMiddle
+      
+      # if (wMiddle == 0){
+      #   wMiddle = 1 
+      # }
+      
+      wLarge <- input$wLarge
+      
+      wsize <- c(wMiddle, wLarge)
+      if (wMiddle > wLarge){
+        wMiddle <- wLarge}
       
       F0 <- matrix(NA,3,2)
       F0[1,1] <- input$Fsmall
@@ -135,7 +142,7 @@ runCommunitySpectrum <- function(...) {
       SF <- baserun(
         nSpecies = 27,
         F0 = F0,
-        S= NA, Parameterset = input$Parameterset)
+        S= NA, Parameterset = input$Parameterset, wsize)
       
       return(SF)
     })
@@ -260,23 +267,24 @@ runCommunitySpectrum <- function(...) {
              xlab = 'Asymptotic weight (g)', 
              ylab = 'Yield (ton/yr)',
              ylim = yl,
+             xlim = c(min(param$wInf),max(param$wInf)),
              main = title, lwd = 3)
         lines(param$wInf,Yield2, col = alpha('red', alpha = 0.3), lwd = 3)
-        lines(rep(wMiddle,100), seq(1e-15,yl[2]+wMiddle, length.out = 100), lty = 2)
-        lines(rep(wLarge,100), seq(1e-15,yl[2]+wMiddle, length.out = 100), lty = 2)
+        lines(rep(input$wMiddle,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
+        lines(rep(input$wLarge,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
         legend('bottomright', legend = c('Before', 'after'), lty = c(1,1), 
                col = c(alpha('black', alpha = 0.5),'red'), 
                bty = 'n')
         # Print summed yields:
-        text(x=min(param$wInf)*sqrt(wMiddle/min(param$wInf)), 
+        text(x=min(param$wInf)*sqrt(input$wMiddle/min(param$wInf)), 
              y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
-             labels=sprintf('%0.2e ton/yr', sum(Yield2[param$wInf<wMiddle])))
-        text(x=wMiddle*sqrt(wLarge/wMiddle), 
+             labels=sprintf('%0.2e ton/yr', sum(Yield2[param$wInf<input$wMiddle])))
+        text(x=10^input$wMiddle*sqrt(input$wLarge/input$wMiddle), 
              y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
-             labels=sprintf('%0.2e ton/yr', sum(Yield2[param$wInf>wMiddle & param$wInf<wLarge])))
-        text(x=wLarge*sqrt(max(param$wInf)/wLarge), 
+             labels=sprintf('%0.2e ton/yr', sum(Yield2[param$wInf>10^input$wMiddle & param$wInf<10^input$wLarge])))
+        text(x=input$wLarge*sqrt(max(param$wInf)/input$wLarge), 
              y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
-             labels=sprintf('%0.2e ton/yr', sum(Yield2[param$wInf>=wMiddle])))
+             labels=sprintf('%0.2e ton/yr', sum(Yield2[param$wInf>=10^input$wMiddle])))
         
       }else{
         plot(param$wInf,Yield, log = 'xy', col = alpha('black',alpha = 0.5),
@@ -285,8 +293,8 @@ runCommunitySpectrum <- function(...) {
              ylim = yl,
              main = title, pch = 16, lwd = 3, cex = 2)
         points(param$wInf,Yield2, col = alpha('red', alpha = 0.5), cex = 2, lwd = 3)
-        lines(rep(wMiddle,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
-        lines(rep(wLarge,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
+        lines(rep(input$wMiddle,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
+        lines(rep(input$wLarge,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
         legend('bottomleft', legend = c('Before', 'after'), pch = c(16,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
       }
     })
@@ -309,10 +317,11 @@ runCommunitySpectrum <- function(...) {
              xlab = 'Asymptotic weight (g)', 
              ylab = 'Spawning stock biomass',
              ylim = yl,
+             xlim = c(min(param$wInf),max(param$wInf)),
              main = title, lwd = 3)
         lines(param$wInf,SSB2, col = alpha('red', alpha = 0.3), lwd = 3)
-        lines(rep(wMiddle,100), seq(1e-15,yl[2]+wMiddle, length.out = 100), lty = 2)
-        lines(rep(wLarge,100), seq(1e-15,yl[2]+wMiddle, length.out = 100), lty = 2)
+        lines(rep(input$wMiddle,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
+        lines(rep(input$wLarge,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
         legend('bottomright', legend = c('Before', 'after'), lty = c(1,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
       }else{
         plot(param$wInf,SSB, log = 'xy', col = alpha('black',alpha = 0.5),
@@ -321,8 +330,8 @@ runCommunitySpectrum <- function(...) {
              ylim = yl,
              main = title, pch = 16, lwd = 3, cex = 2)
         points(param$wInf,SSB2, col = alpha('red', alpha = 0.5), cex = 2, lwd = 3)
-        lines(rep(wMiddle,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
-        lines(rep(wLarge,wMiddle), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
+        lines(rep(input$wMiddle,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
+        lines(rep(input$wLarge,wMiddle), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
         legend('bottomleft', legend = c('Before', 'after'), pch = c(16,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
       }
       
