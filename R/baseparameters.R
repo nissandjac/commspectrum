@@ -85,10 +85,8 @@ param$f0 <- kappa*alphae/(kappa*alphae + mean(param$h));
 #fprintf('Expected feeding level: #f\n', param$f0);
 
 w <- makegrid(param)[[1]];
-param$kappaPP <- kappa;
 Sequ <- calcequ(param, w);
 param$a <- Sequ$a;
-#param$kappaPP <- kappa/param$rPP*(param$rPP +  kappa*kappa*alphae*alphap/(alphae*kappa+param$h));
 #
 # Fix recruitment:
 param$nRecruitmentType <- 2; # Beverton-Holt
@@ -101,8 +99,8 @@ param$fN0 <- Sequ$Nequ[,1] * discount; # Note, the initial level is discounted w
 n <- param$n;
 q <- param$q;
 a <- param$a[1];
-param$kappaRmax <- param$kappaPP*1e4
-param$kappaRmax <- 100
+param$kappaRmax <- param$kappaR*20000
+#param$kappaRmax <- 100
 
 param$Rmax <- (param$alpha*param$f0est*param$h*param$w0^param$n-param$ks*param$w0^param$p)*param$fN0
 

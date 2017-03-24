@@ -33,7 +33,7 @@ runCommunitySpectrum <- function(...) {
                               choices =  c('Generic', 'North Sea', 'Baltic Sea', 
                                            'Benguela Current', 'Northeast US Cont. Shelf',
                                            'Barents Sea'))),
-        column(6, htmlOutput("EcosystemDescription") )
+        column(8, htmlOutput("EcosystemDescription") )
       ))
     ,
     wellPanel(
@@ -105,7 +105,6 @@ runCommunitySpectrum <- function(...) {
     )
   ),
   server = function(input,output){
-    
     #
     # Define fleet sizes:
     #
@@ -117,7 +116,7 @@ runCommunitySpectrum <- function(...) {
     output$EcosystemDescription <- renderText({
       
       if (input$Parameterset=='Generic')
-        return("The generic trait-based model")
+        return("The generic trait-based model containing species with asymptotic sizes between 4 g and 50 kg.")
       
       if (input$Parameterset=='North Sea')
         return("North Sea ecosystem. Contains the following species:<br> 
@@ -250,9 +249,9 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
           legend('bottomright', legend = c('Small', 'Medium', 'Large'), lty = c(1,1,1), lwd = c(1,2,3), bty = 'n')
           # Add diagonal line
           lines(rep(0, 100), seq(min(minYl), max(maxYl), length.out = 100), lty = 2, col = 'black', lwd = 3)
-          
-          
         })
+      
+      
       output$plotF <- renderPlot({
         SF <- simResults()[[1]]
         param <- simResults()[[3]]
@@ -271,8 +270,9 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
              xlab = 'weight (g)', ylim = yl, main = title)
         lines(SF2$w, fishing.after[1,], lwd = 2, col = alpha('red', alpha =  0.3))
         for (i in 2:param$nSpecies){
-          lines(SF$w,fishing[i,], lwd = 2, col = alpha('black',alpha = 0.5))
-          lines(SF2$w,fishing.after[i,], col = alpha('red', alpha =  0.5))
+          ix = SF$w < param$wInf[i]
+          lines(SF$w[ix], fishing[i,ix], lwd = 2, col = alpha('black',alpha = 0.5))
+          lines(SF2$w[ix], fishing.after[i,ix], col = alpha('red', alpha =  0.5))
         }
         legend('topleft', legend = c('Before', 'after'), lty = c(1,1), col = c('black','red'), bty = 'n')
         
@@ -284,8 +284,6 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
         SF2 <- simResults()[[2]]      #param <- MM[[which(MM == 'param')]]
         param <- simResults()[[3]]
         
-        
-        
         idx.Yield <- which(names(SF) == 'Yield')
         Yield <- SF[[idx.Yield]]
         idx.Yield <- which(names(SF2) == 'Yield')
@@ -295,41 +293,50 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
         yl <- c(min(c(Yield[Yield>0],Yield2[Yield2>0])),
                 max(c(Yield[Yield>0],Yield2[Yield2>0])))
         
-        title <- 'Yield'
         if (input$Parameterset == 'Generic'){
           plot(param$wInf,Yield, log = 'xy', col = alpha('black',alpha = 0.5), type = 'l', 
                xlab = 'Asymptotic weight (g)', 
-               ylab = 'Yield (ton/yr)',
+               ylab = 'Yield (ton/km2/yr)',
                ylim = yl,
                xlim = c(min(param$wInf),max(param$wInf)),
-               main = title, lwd = 3)
+               main = 'Yield (ton/km2/yr)', lwd = 3)
           lines(param$wInf,Yield2, col = alpha('red', alpha = 0.3), lwd = 3)
           lines(rep(input$wMiddle,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
-          lines(rep(input$wLarge,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
+          lines(rep(input$wLarge, 100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
           legend('bottomright', legend = c('Before', 'after'), lty = c(1,1), 
                  col = c(alpha('black', alpha = 0.5),'red'), 
                  bty = 'n')
           # Print summed yields:
           text(x=min(param$wInf)*sqrt(input$wMiddle/min(param$wInf)), 
                y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
-               labels=sprintf('%0.2e ton/yr', sum(Yield2[param$wInf<input$wMiddle])))
-          text(x=10^input$wMiddle*sqrt(input$wLarge/input$wMiddle), 
+               labels=sprintf('%3.2f ', sum(Yield2[param$wInf<input$wMiddle])))
+          text(x=input$wMiddle*sqrt(input$wLarge/input$wMiddle), 
                y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
-               labels=sprintf('%0.2e ton/yr', sum(Yield2[param$wInf>10^input$wMiddle & param$wInf<10^input$wLarge])))
+               labels=sprintf('%3.2f ', sum(Yield2[param$wInf>input$wMiddle & param$wInf<input$wLarge])))
           text(x=input$wLarge*sqrt(max(param$wInf)/input$wLarge), 
                y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
-               labels=sprintf('%0.2e ton/yr', sum(Yield2[param$wInf>=10^input$wMiddle])))
+               labels=sprintf('%3.2f ', sum(Yield2[param$wInf>=input$wMiddle])))
           
         }else{
           plot(param$wInf,Yield, log = 'xy', col = alpha('black',alpha = 0.5),
                xlab = 'Asymptotic weight (g)', 
                ylab = 'Yield (ton/yr)',
                ylim = yl,
-               main = title, pch = 16, lwd = 3, cex = 2)
+               main = 'Yield (ton/yr)', pch = 16, lwd = 3, cex = 2)
           points(param$wInf,Yield2, col = alpha('red', alpha = 0.5), cex = 2, lwd = 3)
           lines(rep(input$wMiddle,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
           lines(rep(input$wLarge,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
           legend('bottomleft', legend = c('Before', 'after'), pch = c(16,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
+          # Print summed yields:
+          text(x=min(param$wInf)*sqrt(input$wMiddle/min(param$wInf)), 
+               y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
+               labels=sprintf('%0.2e ', sum(Yield2[param$wInf<input$wMiddle])))
+          text(x=input$wMiddle*sqrt(input$wLarge/input$wMiddle), 
+               y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
+               labels=sprintf('%0.2e ', sum(Yield2[param$wInf>input$wMiddle & param$wInf<input$wLarge])))
+          text(x=input$wLarge*sqrt(max(param$wInf)/input$wLarge), 
+               y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
+               labels=sprintf('%0.2e ', sum(Yield2[param$wInf>=input$wMiddle])))
         }
       })
       
@@ -391,18 +398,18 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
         Spectrum2 <- SF2$N[idxEnd,,]
         Spectrum2[Spectrum2 == 0] <- NA # For plotting
         
-        
         w <- SF$w
         title <- 'Biomass density at equilibrium'
         
-        yl <- c(2*min(c(t(replicate(param$nSpecies, w))*Spectrum1,t(replicate(param$nSpecies, w))*Spectrum2), na.rm = T), 
-                100*max(c(t(replicate(param$nSpecies, w))*Spectrum1,t(replicate(param$nSpecies, w))*Spectrum2), na.rm = T))
+        #yl <- c(2*min(c(t(replicate(param$nSpecies, w))*Spectrum1,t(replicate(param$nSpecies, w))*Spectrum2), na.rm = T), 
+        #        100*max(c(t(replicate(param$nSpecies, w))*Spectrum1,t(replicate(param$nSpecies, w))*Spectrum2), na.rm = T))
+        yl <- param$kappaR * c(0.001*max(w)^(1+param$kR) , 0.1*0.02^(1+param$kR))
         
         plot(w,Spectrum1[1,]*w, log = 'xy', type = 'l', col = alpha('black',alpha = 0.3),
              ylab = 'Biomass density (-)', 
              xlab = 'Weight (g)', 
              main = title, 
-             ylim=yl, xlim=c(0.02, 1e5))
+             ylim=yl, xlim=c(0.02, max(w)))
         lines(w,Spectrum2[1,]*w, col = alpha('red',alpha = 0.3))
         
         for (i in 2:param$nSpecies){

@@ -50,7 +50,7 @@ S$a <- S$a * matrix(1,param$nSpecies)
 S$Nequ <- matrix(0,param$nSpecies,length(w))
 
 for (iSpecies in 1:param$nSpecies){
-S$Nequ[iSpecies,] <-  param$kappaPP*wInf[iSpecies]^(-S$lambda+param$n+S$a[iSpecies])*w^(-param$n - S$a[iSpecies])*
+S$Nequ[iSpecies,] <-  param$kappaR*wInf[iSpecies]^(-S$lambda+param$n+S$a[iSpecies])*w^(-param$n - S$a[iSpecies])*
 (1 - (w/wInf[iSpecies])^(1-param$n))^((S$a[iSpecies]+wInf[iSpecies]^(1-param$n)*S$Z0[iSpecies]/hbar[iSpecies])/(1-param$n));
 
 S$Nequ[iSpecies, w >= wInf[iSpecies]] <- 0
@@ -71,7 +71,7 @@ S$Nequ[iSpecies,] <- S$Nequ[iSpecies,]*const[iSpecies];
 # Normalization by fitting to expected community spectrum:
   #
 if (param$nSpecies > 4){
-const <- colSums(S$Nequ) / (param$kappaPP*w^(-2-param$q+param$n))
+const <- colSums(S$Nequ) / (param$kappaR*w^(-2-param$q+param$n))
 
 wtemp <- sort(wInf);
 const <- mean(const[w>=wtemp[2] & w<=wtemp[length(wtemp)-1]]);
