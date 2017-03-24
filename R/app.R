@@ -29,10 +29,11 @@ runCommunitySpectrum <- function(...) {
       p('Select an ecosystem. Use "generic" for running the trait-based model which models a generic fish community.'),
       fluidRow(
         column(2, br(), p('Ecosystem')),
-        column(3, selectInput(inputId = 'Parameterset', label = '',
+        column(2, selectInput(inputId = 'Parameterset', label = '',
                              choices =  c('Generic', 'North Sea', 'Baltic Sea', 
                                           'Benguela Current', 'Northeast US Cont. Shelf',
-                                          'Barents Sea')))
+                                          'Barents Sea'))),
+        column(6, htmlOutput("EcosystemDescription") )
       ))
     ,
     wellPanel(
@@ -110,10 +111,26 @@ runCommunitySpectrum <- function(...) {
     #
     wMiddle <- 100
     wLarge <- 3000
-    #ixSmall <- param$wInf < wMiddle
-    #ixMiddle <- param$wInf >= wMiddle & param$wInf < wLarge
-    #ixLarge <- param$wInf >= wLarge
+    #
+    # Make the description of the selected ecosystem:
+    #
+    output$EcosystemDescription <- renderText({
+      
+      if (input$Parameterset=='Generic')
+        return("The generic trait-based model")
+      
+      if (input$Parameterset=='North Sea')
+        return("North Sea ecosystem. Contains the following species:<br>
+               Sandeel, Winf = 16 g<br>
+              Sprat, Winf = 25 g")
+    })
+    #
+    #    paste("You have selected this", input$Parameterset)})
+    #if (input$Parameterset=='Generic')
+    #       output$EcosystemDescription <- renderText({"You have selected this"})
     
+    #if (input$Parameterset=='North Sea')
+    #  output$EcosystemDescription <- renderText({"You have selected this"})
     #
     #   Run simulation when the button is clicked
     #
