@@ -33,4 +33,11 @@ Build package from RStudio:\
 	In Rstudio use Build -> More -> Build source\
  \
 Build from terminal, while standing in directory above \'93cspectrum\'94:\
-	R CMD build cspectrum}
+	R CMD build cspectrum\
+\
+\
+Raw install in R:\
+	install.packages(\'93devtools\'94)\
+	devtools::install_git("{\field{\*\fldinst{HYPERLINK "https://repos.gbar.dtu.dk/git/alko/cspectrum.git"}}{\fldrslt \cf3 \ul \ulc3 https://repos.gbar.dtu.dk/git/alko/cspectrum.git}}")\
+	library(cspectrum)\
+	runCommunitySpectrum()}

@@ -13,28 +13,17 @@ IterateSpectrum <- function(param, S){
     S <- list()
   }
   
-  # source("makegrid.R")
-  # source('gradient.R')
-  # source('fishing.R')
   # ---------------------------------------------------------
   # Set up grid for weights (w)
   # ---------------------------------------------------------
-  #nGrid <- param$nGrid;
-  #w <- logspace(log10(param$w0), log10(param$wMax), nGrid);
-  #dw <- gradient(w);
-  
   wl <- makegrid(param);
   w <- wl[[1]]
   dw <- wl[[2]]
-  
   nGrid <- length(w);
   
   # wPP is the primary spectrum grid
-  
   nGridPP <- param$nGridPP;
   
-  
-  #wend <- fzero(@(x) x+param$fGridexp*x^0$75-param$w0, param$w0);
   if (nGridPP == 1){
     wPP <- param$wRcut;
     dwPP <- 1/wPP
@@ -99,13 +88,6 @@ IterateSpectrum <- function(param, S){
     else{
       StdMetab[i,] <- param$ks[i]* w^param$p}
   }
-  # if (length(param$ks > 1)){
-  #
-  #   StdMetab <-  t(t((matrix(1,param$nSpecies)%*%w)^param$p)%*%(diag(ks)))
-  #
-  # }else{
-  #
-  # }
   # Fix if rho is not allocated for all species:
   if (length(param$rho)<nSpecies){
     param$rho <- param$rho(1)*onez;
@@ -115,12 +97,7 @@ IterateSpectrum <- function(param, S){
   if (length(param$alpha)==1){
     param$alpha <- param$alpha*onez
   }
-  
-  #if (length(param$bFixedN0)<-<-1)
-  #  param$bFixedN0 <- param$bFixedN0*onez;
-  #  param$fRandomRecruitment <- param$fRandomRecruitment*onez;
-  #end
-  
+
   Winf <- param$wInf;
   wMature <- Winf*param$alphaMature;
   Z0 <- param$mu0prefactor * Winf^param$mu0exponent; # Changed from Z0 to mu0
@@ -135,17 +112,6 @@ IterateSpectrum <- function(param, S){
     }}
   
   for (iSpecies in 1:nSpecies){
-    #
-    # Initial spectrum:
-    #
-    
-    
-    #
-    # if (length(S) > 0){
-    #   Ntemp <- approx(S$w, S$N[param$tEnd/param$dt,iSpecies,],w) # Might be unneccesary
-    #   N[iSpecies,] <- Ntemp$y
-    # }#}
-    
     #  Define species specific h and gamma
     if (length(param$h) > 1){
       IntakeMax[iSpecies,] <- param$h[iSpecies]* w^param$n;
@@ -160,12 +126,9 @@ IterateSpectrum <- function(param, S){
       SearchVol <- param$gamma * w^param$q
       #SearchVol <- t(replicate(wend,SearchVol))
     }
-    
-    ##
+    #
     # Allocation to reproductive mass:
     #
-    
-    
     tmp <- w/param$wInf[iSpecies];
     psi[iSpecies,] <- tmp^(1-param$n)*1/(1+(tmp/param$alphaMature)^(-10));     # cut off before maturation
     # param to mature cutoff
@@ -185,30 +148,20 @@ IterateSpectrum <- function(param, S){
       Fin[iSpecies,] <- fishing(param,iSpecies,w,type)
     }
     
-    
-    
     if (length(param$wFstart) > 0){
-      
       if (length(param$wFstart) == 1){
         param$wFstart <- param$wFstart * matrix(1,length(param$wInf));
       }
-      
       Fin[iSpecies,w < param$wFstart[iSpecies]] <- 0
     }
     
-    
     if (length(param$wFend) > 0){
-      
       if (length(param$wFend) == 1){
         param$wFend <- param$wFend * matrix(1,length(param$wInf));
       }
-      
       Fin[iSpecies,w > param$wFend[iSpecies]] <- 0
     }
   }
-  
-  
-  
   #-----------------------------------------------------------------------------
   # If there was a previous run, override some of the defaults given above
   # -----------------------------------------------------------------------------
@@ -225,7 +178,7 @@ IterateSpectrum <- function(param, S){
   f <- matrix(0,nSpecies, nGrid);
   
   # -----------------------------------------------------------------------------
-  # Set up vars for calculating predation$
+  # Set up vars for calculating predation
   # predkernel(iPredator, iPrey)
   # -----------------------------------------------------------------------------
   predkernel <- matrix(0,nGrid, nGrid);
@@ -247,21 +200,6 @@ IterateSpectrum <- function(param, S){
     theta <- param$theta;
     thetaPP <- param$thetaPP;
   }
-  #
-  # If species have an 'x' trait use that to set up interaction matrix:
-  #
-  # if isfield(param, 'x')
-  # theta <- zeros(nSpecies);
-  # thetaPP <- zeros(nSpecies,param$nxPP);
-  # for j <- 1:nSpecies
-  # theta(j,:) <- exp( -0$5*(param$x(j)-param$x)$^2/(param$sigmax^2) );
-  # thetaPP(j,:) <- exp( -0$5*(param$x(j)-xPP)$^2/(param$sigmax^2) );
-  # end
-  # else
-  # param$nxPP <- 1;
-  # #thetaPP <- NaN;
-  # end
-  
   #---------------------------------------------------------
   # Initialize:
   # ---------------------------------------------------------
@@ -494,15 +432,6 @@ IterateSpectrum <- function(param, S){
   S$nPP <- nPPsave;      # Resource spectrum (time,1,weight)
   S$dwPP <- dwPP;
   S$xPP <- xPP;
-  
-  
-  
-  
-  #                            if param$bVerbose
-  #                            tRun <- cputime-tStart;
-  #                            fprintf('\nExecution time: #2d:#05$2f$\n',$$$
-  #                                    [floor(tRun/60) mod(tRun,60)]);
-  #                            end
-  #
+
   return(S)
 }

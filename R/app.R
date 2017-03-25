@@ -149,17 +149,13 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
         # Set sizes of fleets:
         #
         wMiddle <- input$wMiddle
-        
-        # if (wMiddle == 0){
-        #   wMiddle = 1 
-        # }
-        
         wLarge <- input$wLarge
-        
-        wsize <- c(wMiddle, wLarge)
         if (wMiddle > wLarge){
           wMiddle <- wLarge}
-        
+        wsize <- c(wMiddle, wLarge)
+        #
+        # Set fishing mortalities:
+        #
         F0 <- matrix(NA,3,2)
         F0[1,1] <- input$Fsmall
         F0[2,1]<- input$Fmedium
@@ -167,7 +163,9 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
         F0[1,2]<- input$Fsmall.after
         F0[2,2]<- input$Fmedium.after
         F0[3,2]<- input$Flarge.after
-        
+        #
+        # Run simulation:
+        #
         SF <- baserun(
           nSpecies = 27,
           F0 = F0,
@@ -183,7 +181,6 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
           SF <- simResults()[[1]] # Run before
           SF2 <- simResults()[[2]]  # Run after
           param <- simResults()[[3]] # params
-          
           
           idx.biomass <- which(names(SF) == 'Biomass')
           Biomass <- SF[[idx.biomass]]
@@ -375,9 +372,6 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
           lines(rep(input$wLarge,wMiddle), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
           legend('bottomleft', legend = c('Before', 'after'), pch = c(16,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
         }
-        
-        
-        
       })
       
       output$plotSpectrum <- renderPlot(expr={
@@ -431,13 +425,4 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
       
       
   }))
-}
-
-Ecosystemdescription <- function(sEcosystem) 
-{
-  if (sEcosystem == 'Generic')
-    return('test')
-  
-  if (sEcosystem == 'North Sea')
-    return('test 2')
 }
