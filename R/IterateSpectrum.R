@@ -432,6 +432,10 @@ IterateSpectrum <- function(param, S){
   S$nPP <- nPPsave;      # Resource spectrum (time,1,weight)
   S$dwPP <- dwPP;
   S$xPP <- xPP;
-
+  # 
+  # Yield:
+  #
+  S$Yield <- YieldCalc(param,S)
+  
   return(S)
 }

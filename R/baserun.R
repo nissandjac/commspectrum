@@ -69,15 +69,13 @@ baserun <- function(nSpecies = 18 ,F0 = matrix(0.3,3,2), S= NA,Parameterset = 'G
   param$tEnd <- 40
   param$dt <- 0.5 # run the model faster
   SF <- IterateSpectrum(param,S = S) # Add S here to start at initial conditions from before
-  SF$Yield <- YieldCalc(param,SF)
-  
+
   param$F0[W <= wsize[1]] <- F0[1,2]
   param$F0[W <= wsize[2] & W > wsize[1]] <- F0[2,2]
   param$F0[W > wsize[2]] <- F0[3,2]
   
   SF2 <- IterateSpectrum(param,SF)
-  SF2$Yield <- YieldCalc(param,SF2)
-  
+
   return(list(SFpre = SF,SFpost = SF2,param = param))
   
   

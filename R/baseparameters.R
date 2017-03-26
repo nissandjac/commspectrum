@@ -76,13 +76,7 @@ param$wRcut <- 1;                  # Cut off of background spectrum
 
 # Calc$ equ solutions:
 alphae <- sqrt(2*pi)*mean(param$gamma)*param$sigma*param$beta^(param$q-param$n)*exp((param$q-param$n)^2/param$sigma^2/2);
-# alphap <- sqrt(2*pi)*param$gamma*param$sigma * param$beta^(param$n-1) * $$$
-# 	 exp((param$n-1)^2*param$sigma^2/2);
-# R0 <- fzero( @(x) param$kappaPP*param$rPP* $$$
-#   (param$rPP +  x*x*alphae*alphap/(alphae*x+param$h))^(-1)-x, kappa);
-# fprintf('R0/Kb <- #f\n', R0/param$kappaPP);
 param$f0 <- kappa*alphae/(kappa*alphae + mean(param$h));
-#fprintf('Expected feeding level: #f\n', param$f0);
 
 w <- makegrid(param)[[1]];
 Sequ <- calcequ(param, w);
