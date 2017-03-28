@@ -211,7 +211,7 @@ IterateSpectrum <- function(param, S){
   M2save <- array(0,dim = c(nSave, nSpecies, nGrid))
   Z <- matrix(0,nGrid,1)
   Rpsave <- matrix(0,nSave,nSpecies)
-  SSBmsave <- array(0, dim = c(nSave, nSpecies, nGrid))
+  SSBmsave <- array(0, dim = c(nSave, nSpecies))
   Biomass <- matrix(0,nSave,nSpecies)
   Rtotsave <- matrix(0,nSave,1)
   fSave <- array(0,dim =c(nSave, nSpecies, nGrid))
@@ -338,9 +338,9 @@ IterateSpectrum <- function(param, S){
         gSave[iSave,i,] <- gg[i,]
         Nsave[iSave,i,] <- N[i,]
         Rsave[iSave,i] <- R; # recruitment
-        Biomass[iSave,i] <- sum(N[i,]*w*dw);
+        Biomass[iSave,i] <- sum(N[i,]*w*dw)
         Rpsave[iSave,i] <- Rp; # egg production
-        SSBmsave[iSave,i,] <- SSBm
+        SSBmsave[iSave,i] <- sum(SSBm*N[i,]*dw)
         MsSave[iSave,i,] <- Ms;
         Rtotsave[iSave] <- Rtotsave[iSave] + R;
         fSave[iSave, , ] <- f

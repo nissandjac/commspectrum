@@ -182,7 +182,7 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
           SF2 <- simResults()[[2]]  # Run after
           param <- simResults()[[3]] # params
           
-          idx.biomass <- which(names(SF) == 'Biomass')
+          idx.biomass <- which(names(SF) == 'SSB')
           Biomass <- SF[[idx.biomass]]
           
           idx.time <- which(names(SF) == 't')
@@ -205,7 +205,7 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
             Biomass.small <- rep(NA, length(time))
           }
           
-          idx.biomass <- which(names(SF2) == 'Biomass') # Overwrite and plot the after new fishing
+          idx.biomass <- which(names(SF2) == 'SSB') # Overwrite and plot the after new fishing
           Biomass <- SF2[[idx.biomass]]
           # Sum biomass in small medium and large
           if (length(which(param$wInf < wMiddle)) > 1){
