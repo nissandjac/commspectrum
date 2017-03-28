@@ -181,7 +181,9 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
           SF <- simResults()[[1]] # Run before
           SF2 <- simResults()[[2]]  # Run after
           param <- simResults()[[3]] # params
-          
+          wMiddle <- input$wMiddle
+          wLarge <- input$wLarge
+
           idx.biomass <- which(names(SF) == 'SSB')
           Biomass <- SF[[idx.biomass]]
           
