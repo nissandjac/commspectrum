@@ -229,7 +229,7 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
           minYl <- min(c(Biomass.small,Biomass.medium,Biomass.large,Biomass.small.a,Biomass.medium.a,Biomass.large.a), na.rm = T)
           maxYl <- max(c(Biomass.small,Biomass.medium,Biomass.large,Biomass.small.a,Biomass.medium.a,Biomass.large.a), na.rm = T)
           
-          title <- 'Temporal Biomass evolution'
+          title <- 'Development in spawning stock biomass'
           plot(time-time[length(time)], Biomass.small, log = 'y', xlab = 'time (years)', ylab = 'Biomass (ton)', type = 'l', ylim =c(minYl,maxYl),
                xlim = c(-20, time[length(time)]), col = alpha('black', alpha =  0.5), main = title)
           if(length(Biomass.medium > 0)){
