@@ -303,17 +303,7 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
           legend('bottomright', legend = c('Before', 'after'), lty = c(1,1), 
                  col = c(alpha('black', alpha = 0.5),'red'), 
                  bty = 'n')
-          # Print summed yields:
-          text(x=min(param$wInf)*sqrt(input$wMiddle/min(param$wInf)), 
-               y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
-               labels=sprintf('%3.2f ', sum(Yield2[param$wInf<input$wMiddle])))
-          text(x=input$wMiddle*sqrt(input$wLarge/input$wMiddle), 
-               y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
-               labels=sprintf('%3.2f ', sum(Yield2[param$wInf>input$wMiddle & param$wInf<input$wLarge])))
-          text(x=input$wLarge*sqrt(max(param$wInf)/input$wLarge), 
-               y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
-               labels=sprintf('%3.2f ', sum(Yield2[param$wInf>=input$wMiddle])))
-          
+          fmt <- '%3.2f '
         }else{
           plot(param$wInf,Yield, log = 'xy', col = alpha('black',alpha = 0.5),
                xlab = 'Asymptotic weight (g)', 
@@ -325,16 +315,29 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
           lines(rep(input$wLarge,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
           legend('bottomleft', legend = c('Before', 'after'), pch = c(16,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
           # Print summed yields:
-          text(x=min(param$wInf)*sqrt(input$wMiddle/min(param$wInf)), 
-               y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
-               labels=sprintf('%0.2e ', sum(Yield2[param$wInf<input$wMiddle])))
-          text(x=input$wMiddle*sqrt(input$wLarge/input$wMiddle), 
-               y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
-               labels=sprintf('%0.2e ', sum(Yield2[param$wInf>input$wMiddle & param$wInf<input$wLarge])))
-          text(x=input$wLarge*sqrt(max(param$wInf)/input$wLarge), 
-               y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
-               labels=sprintf('%0.2e ', sum(Yield2[param$wInf>=input$wMiddle])))
+          fmt <- '%0.2e '
         }
+        
+        # Print summed yields:
+        text(x=min(param$wInf)*sqrt(input$wMiddle/min(param$wInf)), 
+             y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
+             labels=sprintf(fmt, sum(Yield2[param$wInf<input$wMiddle])), col='red')
+        text(x=input$wMiddle*sqrt(input$wLarge/input$wMiddle), 
+             y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
+             labels=sprintf(fmt, sum(Yield2[param$wInf>input$wMiddle & param$wInf<input$wLarge])), col='red')
+        text(x=input$wLarge*sqrt(max(param$wInf)/input$wLarge), 
+             y=yl[1]*(yl[2]/yl[1])^0.95, adj=0.5,
+             labels=sprintf(fmt, sum(Yield2[param$wInf>=input$wLarge])), col='red')
+
+        text(x=min(param$wInf)*sqrt(input$wMiddle/min(param$wInf)), 
+             y=yl[1]*(yl[2]/yl[1])^0.85, adj=0.5,
+             labels=sprintf(fmt, sum(Yield[param$wInf<input$wMiddle])), col='black')
+        text(x=input$wMiddle*sqrt(input$wLarge/input$wMiddle), 
+             y=yl[1]*(yl[2]/yl[1])^0.85, adj=0.5,
+             labels=sprintf(fmt, sum(Yield[param$wInf>input$wMiddle & param$wInf<input$wLarge])), col='black')
+        text(x=input$wLarge*sqrt(max(param$wInf)/input$wLarge), 
+             y=yl[1]*(yl[2]/yl[1])^0.85, adj=0.5,
+             labels=sprintf(fmt, sum(Yield[param$wInf>=input$wLarge])), col='black')
       })
       
       output$plotSSB <- renderPlot({
