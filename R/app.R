@@ -230,7 +230,7 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
           maxYl <- max(c(Biomass.small,Biomass.medium,Biomass.large,Biomass.small.a,Biomass.medium.a,Biomass.large.a), na.rm = T)
           
           title <- 'Development in spawning stock biomass'
-          plot(time-time[length(time)], Biomass.small, log = 'y', xlab = 'time (years)', ylab = 'Biomass (ton)', type = 'l', ylim =c(minYl,maxYl),
+          plot(time-time[length(time)], Biomass.small, log = 'y', xlab = 'Time (years)', ylab = 'Biomass (ton)', type = 'l', ylim =c(minYl,maxYl),
                xlim = c(-20, time[length(time)]), col = alpha('black', alpha =  0.5), main = title)
           if(length(Biomass.medium > 0)){
             lines(time-time[length(time)],Biomass.medium, col = alpha('black', alpha =  0.5), lwd = 2)
@@ -261,17 +261,17 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
         fishing.after <- SF2[[idx.fishing]]
         
         yl <- c(0,max(c(fishing,fishing.after)))
-        title <- 'Fishing selectivity'
+        title <- 'Fisheries selectivity'
         plot(SF$w,fishing[1,], log = 'x', type = 'l', lwd = 2, xlim = c(0.1,max(param$wInf)),
              col = alpha('black',alpha = 0.5), ylab = 'Fishing mortality (per year)',
-             xlab = 'weight (g)', ylim = yl, main = title)
+             xlab = 'Weight (g)', ylim = yl, main = title)
         lines(SF2$w, fishing.after[1,], lwd = 2, col = alpha('red', alpha =  0.3))
         for (i in 2:param$nSpecies){
           ix = SF$w < param$wInf[i]
           lines(SF$w[ix], fishing[i,ix], lwd = 2, col = alpha('black',alpha = 0.5))
           lines(SF2$w[ix], fishing.after[i,ix], col = alpha('red', alpha =  0.5))
         }
-        legend('topleft', legend = c('Before', 'after'), lty = c(1,1), col = c('black','red'), bty = 'n')
+        legend('topleft', legend = c('Before', 'After'), lty = c(1,1), col = c('black','red'), bty = 'n')
         
       })
       
@@ -300,7 +300,7 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
           lines(param$wInf,Yield2, col = alpha('red', alpha = 0.3), lwd = 3)
           lines(rep(input$wMiddle,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
           lines(rep(input$wLarge, 100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
-          legend('bottomright', legend = c('Before', 'after'), lty = c(1,1), 
+          legend('bottomright', legend = c('Before', 'After'), lty = c(1,1), 
                  col = c(alpha('black', alpha = 0.5),'red'), 
                  bty = 'n')
           fmt <- '%3.2f '
@@ -313,7 +313,7 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
           points(param$wInf,Yield2, col = alpha('red', alpha = 0.5), cex = 2, lwd = 3)
           lines(rep(input$wMiddle,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
           lines(rep(input$wLarge,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
-          legend('bottomleft', legend = c('Before', 'after'), pch = c(16,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
+          legend('bottomleft', legend = c('Before', 'After'), pch = c(16,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
           # Print summed yields:
           fmt <- '%0.2e '
         }
@@ -363,7 +363,7 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
           lines(param$wInf,SSB2, col = alpha('red', alpha = 0.3), lwd = 3)
           lines(rep(input$wMiddle,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
           lines(rep(input$wLarge,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
-          legend('bottomright', legend = c('Before', 'after'), lty = c(1,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
+          legend('bottomright', legend = c('Before', 'After'), lty = c(1,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
         }else{
           plot(param$wInf,SSB, log = 'xy', col = alpha('black',alpha = 0.5),
                xlab = 'Asymptotic weight (g)', 
@@ -373,7 +373,7 @@ capelin, pollock, golden redfish, greenland halibut, haddock, atlantic cod.")
           points(param$wInf,SSB2, col = alpha('red', alpha = 0.5), cex = 2, lwd = 3)
           lines(rep(input$wMiddle,100), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
           lines(rep(input$wLarge,wMiddle), seq(1e-15,yl[2]+1000, length.out = 100), lty = 2)
-          legend('bottomleft', legend = c('Before', 'after'), pch = c(16,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
+          legend('bottomleft', legend = c('Before', 'After'), pch = c(16,1), col = c(alpha('black', alpha = 0.5),'red'), bty = 'n')
         }
       })
       
