@@ -46,25 +46,20 @@ runFoodWebModel <- function(Parameterset='TraitBased', F0 = c(0.3, 0.3, 0.3), S 
     param <- baseparameters(W,kappa = 0.005,h = 20)
   }
   
-  if (Parameterset == 'North Sea'){
-    load('R/NorthSea.RData')
-  }  
+  if (Parameterset == 'North Sea')
+    data(NorthSea)
   
-  if (Parameterset == 'Benguela Current'){
-    load('R/Benguela.RData')
-  }  
+  if (Parameterset == 'Benguela Current')
+    data('Benguela')
   
-  if (Parameterset == 'Baltic Sea'){
-    load('R/Baltic.RData')
-  }  
+  if (Parameterset == 'Baltic Sea')
+    data(Baltic)
   
-  if (Parameterset == 'Northeast US Cont. Shelf'){
-    load('R/NEUSCS.RData')
-  }  
+  if (Parameterset == 'Northeast US Cont. Shelf')
+    data(NEUSCS)
   
-  if (Parameterset == 'Barents Sea'){
-    load('R/Barents.RData')
-  }  
+  if (Parameterset == 'Barents Sea')
+    data(Barents)
   
   W <- param$wInf
   nSpecies <- param$nSpecies
@@ -143,13 +138,15 @@ plotResults <- function( S )
   # Feeding levels
   # -------------------------------
   f <- S$f[idxEnd,,]
-  plot(w, rep(param$fc[1],length(w)), type = 'l', log="x", lty=2,  # critical feeding level
+  plot(w, rep(param$fc[1],length(w)), type = 'l', log="x", lty=3,  # critical feeding level
        ylab = 'Feeding level',
        ylim=c(0,1),
        xlim= xlimit)
   lines(w, rep(param$f0, length(w)), lty=2) # Theoretical feeding level
-  for (i in 2:param$nSpecies)
-    lines(w, f[i,], lty=1)
+  for (i in 2:param$nSpecies) {
+    ix <- w <= W[i]
+    lines(w[ix], f[i,ix], lty=1)
+  }
   # -------------------------------
   # Mortality
   # -------------------------------
@@ -180,7 +177,7 @@ plotResults <- function( S )
        ylab = 'R0',
        ylim = c(0.5,max(R0)))
   points(W, R0)
-  lines(W, rep(1,length(W)), lty=2)
+  lines(W, rep(1,length(W)), lty=3)
   # -------------------------------
   # Yield
   # -------------------------------

@@ -19,10 +19,10 @@ baserun <- function(nSpecies = 18 ,F0 = matrix(0.3,3,2), S= NA,Parameterset = 'G
     data(Baltic)
 
   if (Parameterset == 'Northeast US Cont. Shelf')
-    data('NEUSCS')
+    data(NEUSCS)
 
   if (Parameterset == 'Barents Sea')
-    data('Barents')
+    data(Barents)
 
   W <- param$wInf
   nSpecies <- param$nSpecies
