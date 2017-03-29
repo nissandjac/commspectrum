@@ -34,6 +34,10 @@ runTraitBasedModel <- function(nSpecies = 18 ,
 #' @return A structure with the output of the simulation
 #'
 #' @examples runFoodWebModel('North Sea', F0 = c(0.1, 0.3, 0.7))
+#' @examples runFoodWebModel('Northeast US Cont. Shelf')
+#' @examples runFoodWebModel('Benguela Current')
+#' @examples runFoodWebModel('Baltic Sea')
+#' @examples runFoodWebModel('Barents Sea')
 #' 
 #' @export
 runFoodWebModel <- function(Parameterset='TraitBased', F0 = c(0.3, 0.3, 0.3), S = NA) 
@@ -151,14 +155,14 @@ plotResults <- function( S )
   # Mortality
   # -------------------------------
   M2 <- S$M2[idxEnd,,]
-  plot(w, M2[1,], type='l', log="x", lty=1,lwd=3,
+  plot(w, mean(param$a)*param$alpha*mean(param$h)*(param$f0-mean(param$fc)) * w^(param$n-1), type='l',lty=2,log="x",
        ylab = 'Mortality (1/yr)',
        xlab = "Weight (g)",
        ylim = c(0,4),
        xlim = xlimit)
-  lines(w, mean(param$a)*param$alpha*mean(param$h)*(param$f0-mean(param$fc)) * w^(param$n-1), lty=2)
   for (i in 2:param$nSpecies) {
     ix <- w<=param$wInf[i]
+    lines(w[ix], M2[i,ix], type='l', lty=1)
     lines(w[ix], S$Fi[i,ix], lty=1)
     points(param$wInf[i], S$Z0[i])
   }
