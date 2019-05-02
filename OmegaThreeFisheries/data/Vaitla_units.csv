@@ -1,0 +1,2 @@
+species_name,alt_name,coun_iso,description,common_name,class,order,family,genus,species,subspecies,fish,fillet,bones,head,eyes,viscera,skin,dorsal,ventral,fin,roe,liver,leg,othpart,othpart_sp,lean,fatty,young,farmed,habcat,depmin,depmax,range,maxlen,lencat,a_lw,b_lw,troph,protein,fat,iron,zinc,vita,vitb12,vitd,kcal,fac_sat,fac_mon,fac_pol,fac3_pol,fac6_pol,chol,lysine,trigly,retinol,notes
+[UNIT],,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,m,m,,cm,,,,,g/100g,g/100g,mg/100g,mg/100g,RE/100g,mcg/100g,mcg/100g,kcal,g/100g,g/100g,g/100g,g/100g,g/100g,mg/100g,mg/100g,mg/100g,mcg/100g
