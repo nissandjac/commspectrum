@@ -4,7 +4,7 @@ source('load_files.R')
 require(ggplot2)
 require(dplyr)
 
-W <- 10^seq(log10(10),log10(100000),length.out = 30) # 15 species in logspace 
+W <- 10^seq(log10(10),log10(100000),length.out = 20) # 15 species in logspace 
 param <- baseparameters(W,kappa = 0.005,h = 15)
 param$F0 <- rep(0.2,param$nSpecies)
 param$wFstart <- 10
@@ -18,8 +18,11 @@ SF <- IterateSpectrum(param, S0)
 
 plotBiomasstime(param,S0) # Make sure the simulation has gone to equilibrium
 plot(SF$Fin[15,])
-plotSpectrum(param,S0)
 
+png('Figures/sizespetrum.png', width = 16, height = 12, res = 400, units = 'cm')
+
+plotSpectrum(param,S0)
+dev.off()
 
 
 ### Calculate Fmsy of small, medium and large fish 
