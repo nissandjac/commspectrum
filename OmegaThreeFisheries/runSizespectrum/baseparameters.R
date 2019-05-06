@@ -24,7 +24,7 @@ param$f0 <- 0.6; # Feeding level used for calculation of equ$ spectra$
 
 # Species-specific:
 param$wInf <- t(wInf);#logspace(log10(10), log10(1000000), nSpecies)';
-param$mu0prefactor <-2; #2      # Natural mortality
+param$mu0prefactor <- 2; #2      # Natural mortality
 param$mu0exponent <- -1/4; # -1/4
 param$muS0 <- 0;                        # Prefactor for starvation mortality
 param$wMax <- 2*max(param$wInf);
@@ -36,7 +36,7 @@ hCalc <- h; # Average NEUSC h
 param$h <- hCalc;
 # Scaling of intake      
 param$k <- 0
-param$ks <- 0.12*param$h;         # Activity
+param$ks <- 0.15*param$h;         # Activity
 param$p <- 3/4; #0.75; #param$n;                    # Scaling of std$ metabolism
 #param$ks <- 0.08*param$h; # 2.4;        # std$ metabolism (and activity)
 #param$ks <- 0
@@ -158,7 +158,7 @@ param$myF <- 10
 #param$aF <- 0$2;
 param$nF <- 0.05 
 param$gSigma <- 1.5 # 
-
+param$wFstart <- 1 # Always have a lower fishing cut off at 1 g 
 # Weight parameters 
 source('makegrid.R')
 

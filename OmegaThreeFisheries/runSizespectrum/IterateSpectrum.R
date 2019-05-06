@@ -189,30 +189,31 @@ for (iSpecies in 1:nSpecies){
   # Fishing mortality is specified either through wFstart and F0 or
   # as ecosystem fishing through F0
   #
+  
+  
   if (length(param$F0 == 1)){
     param$F0 <- param$F0 * matrix(1,nSpecies)
   }
   
+  
+  if(length(param$fishing) == 1){
+    param$fishing <- rep(param$fishing, nSpecies)
+  }
+  
+  
+  if (length(param$wFstart) == 1){
+    param$wFstart <- param$wFstart * matrix(1,length(param$wInf))
+  }
+  
   if (length(param$fishing) > 0){
-    type = param$fishing
-    Fin[iSpecies,] <- fishing(param,iSpecies,w,type)
-  }
+    type = param$fishing[iSpecies]
+    Fin[iSpecies,w > param$wFstart[iSpecies]]<- param$F0[iSpecies]*fishing(param,iSpecies,w[w > param$wFstart[iSpecies]],type)
   
-  if (length(param$wFstart) > 0){
-    
-    if (length(param$wFstart) == 1){
-      param$wFstart <- param$wFstart * matrix(1,length(param$wInf));
-    }
-    
-    Fin[iSpecies,w < param$wFstart[iSpecies]] <- 0
   }
+  # 
+  Fin[iSpecies,w < param$wFstart[iSpecies]] <- 0
   
-  if(param$fishing == 'BH_non'){
-    if(param$F0[iSpecies]>0){
-    Fin[iSpecies,] <- param$F0[iSpecies]*(Fin[iSpecies,]/max(Fin[iSpecies,]))
-    }
-  }
-  
+
   
   if (length(param$wFend) > 0){
     
@@ -528,37 +529,37 @@ S <- list()
 #
 S$t <- seq(param$dt,param$tEnd, by = param$dt*param$iSave) # The time steps where the
                            # solution is saved
-S$nSave <- nSave;      # Number of timesteps where results are saved
+#S$nSave <- nSave;      # Number of timesteps where results are saved
                          #
                            # Grid:
                              #
-S$nSpecies <- nSpecies;# No$ of species (trait classes)$
+#S$nSpecies <- nSpecies;# No$ of species (trait classes)$
 S$w <- w;              # Individual weight
 S$dw <- dw;            # Difference between weight classes
                            #
                            # Species specific rates calculated directly from param:
                              #
 S$wMature <- wMature;  # Weight at maturation of each species (wInf)
-S$SearchVol <- SearchVol; # Volumentric searh rate  (weight)
+#S$SearchVol <- SearchVol; # Volumentric searh rate  (weight)
 #S$Imax <- IntakeMax;  # Maximum consumption (weight)
-S$Z0 <- Z0;            # Background mortality (wInf)
-S$psi <- psi;
-S$theta <- theta;      # Interaction matrix (if used)
-S$thetaPP <- thetaPP;  # Interaction with resource (if used)
+#S$Z0 <- Z0;            # Background mortality (wInf)
+#S$psi <- psi;
+#S$theta <- theta;      # Interaction matrix (if used)
+#S$thetaPP <- thetaPP;  # Interaction with resource (if used)
                            #
                            # Growth:
                              #
-S$g <- gSave;          # Growth (time,wInf,weight)
-S$f <- fSave;          # Feeding level (time,wInf,weight)
+#S$g <- gSave;          # Growth (time,wInf,weight)
+#S$f <- fSave;          # Feeding level (time,wInf,weight)
                            #S$Eaten <- Eaten;     # Amount of food eaten (time,wInf)
-S$phiprey <- phiprey; # Available food (weight)
-S$prey <- preySave;
-S$M2PP <- M2PPSave                           #S$e <- eSave;         # Available energy (Ee) (time,wInf,weight)
+#S$phiprey <- phiprey; # Available food (weight)
+#S$prey <- preySave;
+#S$M2PP <- M2PPSave                           #S$e <- eSave;         # Available energy (Ee) (time,wInf,weight)
                            #
                            # Mortality:
                              #
 S$M2 <- M2save;        # Predation mortality (time,wInf,weight)
-S$Ms <- MsSave;        # Starvation mortality (time,wInf,weight)
+#S$Ms <- MsSave;        # Starvation mortality (time,wInf,weight)
 S$Fin <- Fin              # Fishing mortality (wInf,weight)$
                            #
                            # Reproduction & recruitment:
@@ -577,9 +578,9 @@ S$N <- Nsave;          # Species spectra (time,wInf,weight)
                              #
 S$wPP <- wPP;          # Weight in the resource spectrum
 S$nPP <- nPPsave;      # Resource spectrum (time,1,weight)
-S$dwPP <- dwPP;
-S$xPP <- xPP; 
-                         
+# S$dwPP <- dwPP;
+# S$xPP <- xPP; 
+#                          
                            
                            
                            

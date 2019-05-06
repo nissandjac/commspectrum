@@ -7,7 +7,7 @@ YieldCalcSize <- function(param,S){
   N <- S$N[tEnd,,]
   Yield <- matrix(0,param$nSpecies,length(S$w))  
 
-    for (i in 1:param$nSpecies){
+  for (i in 1:param$nSpecies){
     
     Yield[i,] <- N[i,]*S$w*S$dw*S$Fin[i,]
     
